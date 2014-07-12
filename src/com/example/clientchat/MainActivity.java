@@ -29,7 +29,7 @@ public class MainActivity extends Activity {
 	
 	
 	String[] tempo_rooms = new String[] {"root","room1","room2","room3","room4"};
-	
+	String [] salas = new String[]{"Root","Room1","Room2","Room3"};
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState)
@@ -46,6 +46,7 @@ public class MainActivity extends Activity {
 		listRooms.setAdapter(_roomadapter);
 		
 		
+		
 		listRooms.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 	    	  @Override
 	    	  public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
@@ -53,7 +54,8 @@ public class MainActivity extends Activity {
 	    		  
 	    		  Intent intent = new Intent(MainActivity.this,ChatActivity.class);
 	    		  
-	    		  //varibles
+	    	      intent.putExtra("User", "hackdie");
+	    	      intent.putExtra("Room", salas[position]);
 	    		  
 	    		  startActivity(intent);
 	    	  }
