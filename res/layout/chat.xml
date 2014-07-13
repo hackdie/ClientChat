@@ -4,12 +4,21 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <TextView
+    <ScrollView
+        android:id="@+id/scrollView1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.13" >
+            <TextView
         android:id="@+id/txt_chat"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="0.13"
         android:textAppearance="?android:attr/textAppearanceLarge" />
+       
+    </ScrollView>
+
+    
 
     <EditText
         android:id="@+id/txtSendMje"

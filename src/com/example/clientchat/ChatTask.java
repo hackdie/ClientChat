@@ -1,7 +1,3 @@
-/**AsyncTask sirve para no utilizar objetos Thread ni objetos Handler. 
- * Es mas sencillo de leer.
- */
-
 package com.example.clientchat;
 
 import java.io.BufferedReader;
@@ -17,59 +13,47 @@ import org.json.JSONObject;
 import android.os.AsyncTask;
 import android.util.Log;
 
-public class ClientTask extends AsyncTask<String, Void, Void> {
+public class ChatTask extends AsyncTask<String, Void, Void> {
 
 	CallBack _mycallback;
-
-	ClientTask(CallBack mycallback) {
+	String identificador,llavePrivada,participante;
+	
+	
+	public ChatTask(String _llave_publica , String _llave_privada, String _Room,CallBack mycallback) {
+		identificador = _llave_publica;
+		llavePrivada = _llave_privada;
+		participante = _Room;
 		_mycallback = mycallback;
 	}
 
-	public String regUser() {
+	public String getMjs() {
 		JSONObject object = new JSONObject();
-
-		Calendar c = Calendar.getInstance();
-		SimpleDateFormat df3 = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-		String user = df3.format(c.getTime());
-
 		try {
-
-			JSONObject object2 = new JSONObject();
-
-			object2.put("status", "online");
-			object2.put("usuario", user);
-			object2.put("IP", "192.168.1.144");
-			object2.put("puerto", "4444");
-
-			object.put("informacion", object2);
-			object.put("accion", "actualizar");
-			object.put("identificador", "0");
-
+			object.put("accion", "recibir");
+			object.put("identificador", identificador);
+			object.put("llavePrivada", llavePrivada);
+			object.put("participante", participante);
+			
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
 		return object.toString();
-	}
-
-	public String findUsers() {
-		JSONObject object = new JSONObject();
-		try {
-			object.put("accion", "listar");
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-		return object.toString();
-	}
+	}	
 
 	interface CallBack {
 		void doInBackground(String Json_server);
 	}
 
 	Socket socket = null;
-	static boolean flag_registro = true;
+	
+	static boolean flag = false;
+	static String json_mje = "";
 
 	@Override
 	protected Void doInBackground(String... action) {
+		
+		Log.e("asd","entro");
+
 		try {
 			while (true) {
 				socket = new Socket("192.168.1.80", 4444);
@@ -79,12 +63,14 @@ public class ClientTask extends AsyncTask<String, Void, Void> {
 						true);
 
 				out = new PrintWriter(socket.getOutputStream(), true);
-				if (flag_registro) {
-					out.println(regUser() + "\0");
-					flag_registro = false;
-				} else {
-					out.println(findUsers() + "\0");
+				
+				if(flag){
+					out.println(json_mje + "\0");
+					flag = false;
 				}
+				else{
+					out.println(getMjs() + "\0");
+				}			
 
 				_mycallback.doInBackground(in.readLine());
 
